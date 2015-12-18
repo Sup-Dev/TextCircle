@@ -1,6 +1,12 @@
 this.Documents = new Mongo.Collection("documents");
 
 if (Meteor.isClient) {
+    Template.date_display.helpers({
+        current_date: function() {
+           return new Date();
+        }
+    });
+
     Template.editor.helpers({
         docid: function() {
             var doc = Documents.findOne();
