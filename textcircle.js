@@ -1,9 +1,15 @@
 this.Documents = new Mongo.Collection("documents");
 
 if (Meteor.isClient) {
+
+    // update the session current_date variable every 1000ms
+    Meteor.setInterval(function() {
+        Session.set("current_date", new Date());
+    }, 1000);
+
     Template.date_display.helpers({
         current_date: function() {
-           return new Date();
+           return Session.get("current_date");
         }
     });
 
