@@ -17,6 +17,7 @@ if (Meteor.isClient) {
             return function (editor) {
                 editor.setOption("lineNumbers", true);
                 editor.setOption("mode", "html");
+                editor.setOption("theme", "cobalt");
                 editor.on("change", function(cm_editor, info) {
                     $("#viewer_iframe").contents().find("html").html(cm_editor.getValue());
                     Meteor.call("addEditingUser");
