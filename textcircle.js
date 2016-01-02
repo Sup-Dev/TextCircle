@@ -5,13 +5,8 @@ if (Meteor.isClient) {
 
     Template.editor.helpers({
         docid: function() {
-            var doc = Documents.findOne();
-            if (doc) {
-                return doc._id;
-            }
-            else {
-                return undefined;
-            }
+            setupCurrentDocument();
+            return Session.get("docid");
         },
         config: function() {
             return function (editor) {
@@ -119,4 +114,14 @@ function fixObjectKeys(obj) {
         newObj[key2] = obj[key];
     }
     return newObj;
+}
+
+function setupCurrentDocument() {
+    var doc;
+    if (!Session.get("docid")) {
+        doc = Documents.findOne();
+        if (doc) {
+            Session.set("docid", doc._id);
+        }
+    }
 }
