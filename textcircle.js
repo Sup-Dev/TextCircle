@@ -47,6 +47,20 @@ if (Meteor.isClient) {
             return users;
         }
     });
+
+    Template.navbar.events({
+        "click .js-add-doc": function(event) {
+            event.preventDefault();
+            console.log("Add a new doc!");
+            if (!Meteor.user()) {
+                alert("You need to login first!");
+            }
+            else {
+                // they are logged in... lets insert a doc
+                Meteor.call("addDoc");
+            }
+        }
+    })
 }
 
 if (Meteor.isServer) {
@@ -60,6 +74,16 @@ if (Meteor.isServer) {
 }
 
 Meteor.methods({
+    addDoc: function() {
+        var doc;
+        if (!this.userId) { // not logged in
+            return;
+        }
+        else {
+            doc = {owner: this.userId, createdOn: new Date(), title: "my new doc"};
+            Documents.insert(doc);
+        }
+    },
     addEditingUser: function() {
         var doc, user, eusers;
         doc = Documents.findOne();

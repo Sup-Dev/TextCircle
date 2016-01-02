@@ -3,12 +3,7 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-default navbar-fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="#">TextCircle</a>
-            <p class="navbar-text navbar-right">{{> loginButtons align="right"}}</p>
-        </div>
-    </nav>
+    {{> navbar}}
 
     <div class="container top-margin">
         <div class="row">
@@ -28,9 +23,27 @@
     </div>
 </body>
 
+<template name="navbar">
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">TextCircle</a>
+            <ul class="nav navbar-nav">
+                <li>
+                    <a href="#" class="js-add-doc">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                        new document
+                    </a>
+                </li>
+            </ul>
+            <p class="navbar-text navbar-right">{{> loginButtons align="right"}}</p>
+        </div>
+    </nav>
+</template>
+
 <template name="editor">
     {{> sharejsCM docid=docid onRender=config id="editor"}}
 </template>
+
 
 <template name="viewer">
     <iframe id="viewer_iframe">
