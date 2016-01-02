@@ -3,6 +3,9 @@ EditingUsers =  new Mongo.Collection("editingUsers");
 
 if (Meteor.isClient) {
 
+    Meteor.subscribe("documents");
+    Meteor.subscribe("editingUsers");
+
     Template.editor.helpers({
         docid: function() {
             setupCurrentDocument();
@@ -45,13 +48,23 @@ if (Meteor.isClient) {
 
     Template.navbar.helpers({
         documents: function() {
-            return Documents.find({});
+            return Documents.find();
         }
     });
 
     Template.docMeta.helpers({
         document: function() {
             return Documents.findOne({_id: Session.get("docid")});
+        },
+        canEdit: function() {
+            var doc;
+            doc = Documents.findOne({_id: Session.get("docid")});
+            if (doc) {
+                if (doc.owner == Meteor.userId()) {
+                    return true;
+                }
+            }
+            return false;
         }
     });
 
@@ -89,7 +102,15 @@ if (Meteor.isClient) {
             console.log(this);
             Session.set("docid", this._id);
         }
-    })
+    });
+
+    Template.docMeta.events({
+        "click .js-tog-private": function(event) {
+            console.log(event.target.checked);
+            var doc = {_id:Session.get("docid"), isPrivate:event.target.checked};
+            Meteor.call("updateDocPrivacy", doc);
+        }
+    });
 }
 
 if (Meteor.isServer) {
@@ -99,6 +120,14 @@ if (Meteor.isServer) {
             Documents.insert({title: "my new document"});
         }
 
+    });
+
+    Meteor.publish("documents", function() {
+        return Documents.find({$or: [{isPrivate: false}, {owner: this.userId}]});
+    });
+
+    Meteor.publish("editingUsers", function() {
+        return EditingUsers.find();
     });
 }
 
@@ -113,6 +142,15 @@ Meteor.methods({
             var id = Documents.insert(doc);
             console.log("addDoc method: got an id");
             return id;
+        }
+    },
+    updateDocPrivacy: function(doc) {
+        console.log("updateDocPrivacy method");
+        console.log(doc);
+        var realDoc = Documents.findOne({_id: doc._id, owner: this.userId});
+        if (realDoc) {
+            realDoc.isPrivate = doc.isPrivate;
+            Documents.update({_id: doc._id}, realDoc);
         }
     },
     addEditingUser: function() {
