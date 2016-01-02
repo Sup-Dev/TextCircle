@@ -52,7 +52,12 @@ if (Meteor.isClient) {
             }
             else {
                 // they are logged in... lets insert a doc
-                Meteor.call("addDoc");
+                var id = Meteor.call("addDoc", function(err, res) {
+                    if (!err) { // all good
+                        console.log("event callback received id: " + res);
+                        Session.set("docid", res);
+                    }
+                });
             }
         }
     })
@@ -76,7 +81,9 @@ Meteor.methods({
         }
         else {
             doc = {owner: this.userId, createdOn: new Date(), title: "my new doc"};
-            Documents.insert(doc);
+            var id = Documents.insert(doc);
+            console.log("addDoc method: got an id");
+            return id;
         }
     },
     addEditingUser: function() {
