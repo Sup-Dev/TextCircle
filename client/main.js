@@ -1,6 +1,7 @@
 Meteor.subscribe("documents");
 Meteor.subscribe("editingUsers");
 
+// routes
 Router.configure({
     layoutTemplate: 'ApplicationLayout'
 });
@@ -18,6 +19,7 @@ Router.route('/documents/:_id', function() {
     this.render("docItem", {to: "main"});
 });
 
+// helpers
 Template.editor.helpers({
     docid: function() {
         setupCurrentDocument();
@@ -122,6 +124,13 @@ Template.docList.helpers({
     }
 });
 
+Template.insertCommentForm.helpers({
+    docid: function() {
+        return Session.get("docid");
+    }
+})
+
+// events
 Template.docMeta.events({
     "click .js-tog-private": function(event) {
         console.log(event.target.checked);

@@ -1,4 +1,13 @@
 Meteor.methods({
+    addComment: function(comment) {
+        console.log("addComment method running");
+        if (this.userId) { // we have a user
+            comment.createdOn = new Date();
+            comment.userId = this.userId;
+            return Comments.insert(comment);
+        }
+        return;
+    },
     addDoc: function() {
         var doc;
         if (!this.userId) { // not logged in
