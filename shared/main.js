@@ -20,9 +20,9 @@ Meteor.methods({
             Documents.update({_id: doc._id}, realDoc);
         }
     },
-    addEditingUser: function() {
+    addEditingUser: function(docid) {
         var doc, user, eusers;
-        doc = Documents.findOne();
+        doc = Documents.findOne({_id: docid});
 
         // no doc give up
         if (!doc) {
