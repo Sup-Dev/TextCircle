@@ -7,7 +7,7 @@ Meteor.startup(function () {
 });
 
 Meteor.publish("documents", function() {
-    return Documents.find({$or: [{isPrivate: false}, {owner: this.userId}]});
+    return Documents.find({$or: [{isPrivate: {$ne: true}}, {owner: this.userId}]});
 });
 
 Meteor.publish("editingUsers", function() {
